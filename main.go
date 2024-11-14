@@ -296,6 +296,8 @@ func main() {
 			slog.Error("Error removing temporary file", "error", err.Error())
 		}
 
+		retries = 0
+
 		slog.Info("Successfully updated OUI database")
 
 		slog.Info("Next OUI database refresh time", "time", time.Now().Add(timerDuration))
