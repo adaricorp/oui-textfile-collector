@@ -18,5 +18,5 @@ require (
 	github.com/prometheus/client_model v0.5.0 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
 	golang.org/x/sys v0.20.0 // indirect
-	google.golang.org/protobuf v1.33.0 // indirect
+	google.golang.org/protobuf v1.35.1 // indirect
 )
