@@ -16,7 +16,6 @@ import (
 
 	"github.com/peterbourgon/ff/v4"
 	"github.com/peterbourgon/ff/v4/ffhelp"
-	"github.com/pkg/errors"
 	"github.com/prometheus/common/version"
 )
 
@@ -109,7 +108,7 @@ func init() {
 func update() (string, error) {
 	f, err := os.CreateTemp("", "oui.csv")
 	if err != nil {
-		return "", errors.Wrapf(err, "Error creating temporary file")
+		return "", fmt.Errorf("error creating temporary file: %w", err)
 	}
 	defer f.Close()
 
@@ -121,20 +120,20 @@ func update() (string, error) {
 
 	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, url, nil)
 	if err != nil {
-		return filename, errors.Wrapf(err, "Error creating http request")
+		return filename, fmt.Errorf("error creating http request: %w", err)
 	}
 
 	req.Header.Set("User-Agent", userAgent)
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return filename, errors.Wrapf(err, "Error doing http request")
+		return filename, fmt.Errorf("error doing http request: %w", err)
 	}
 	defer resp.Body.Close()
 
 	_, err = io.Copy(f, resp.Body)
 	if err != nil {
-		return filename, errors.Wrapf(err, "Error writing to temporary file")
+		return filename, fmt.Errorf("error writing to temporary file: %w", err)
 	}
 
 	return filename, nil
@@ -143,13 +142,13 @@ func update() (string, error) {
 func parse(filename string) error {
 	input, err := os.Open(filename)
 	if err != nil {
-		return errors.Wrapf(err, "Error opening OUI CSV file")
+		return fmt.Errorf("error opening OUI CSV file: %w", err)
 	}
 	defer input.Close()
 
 	output, err := os.Create(*metricFile + ".tmp")
 	if err != nil {
-		return errors.Wrapf(err, "Error opening temporary OUI metric file")
+		return fmt.Errorf("error opening temporary OUI metric file: %w", err)
 	}
 	defer output.Close()
 
@@ -165,7 +164,7 @@ func parse(filename string) error {
 		}
 
 		if err != nil {
-			return errors.Wrapf(err, "Error parsing OUI CSV file")
+			return fmt.Errorf("error parsing OUI CSV file: %w", err)
 		}
 
 		if first {
@@ -204,12 +203,12 @@ func parse(filename string) error {
 			) + "\n",
 		)
 		if err != nil {
-			return errors.Wrapf(err, "Error writing to temporary OUI metric file")
+			return fmt.Errorf("error writing to temporary OUI metric file: %w", err)
 		}
 	}
 
 	if err := os.Rename(*metricFile+".tmp", *metricFile); err != nil {
-		return errors.Wrapf(err, "Error renaming OUI metric file")
+		return fmt.Errorf("error renaming OUI metric file: %w", err)
 	}
 
 	return nil
