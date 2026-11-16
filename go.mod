@@ -4,5 +4,5 @@ go 1.26.11
 
 require (
 	github.com/peterbourgon/ff/v4 v4.0.0-beta.1
-	github.com/prometheus/common v0.73.1
+	github.com/prometheus/common v0.74.0
 )
